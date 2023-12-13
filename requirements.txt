@@ -128,10 +128,6 @@ threadpoolctl==3.1.0
 tifffile==2023.7.4
 tiktoken==0.3.3
 tk==0.1.0
-tomli==2.0.1
-torch==2.0.1+cu118
-torchvision==0.15.2+cu118
-tqdm==4.65.0
 typing_extensions==4.5.0
 uritemplate==4.1.1
 urllib3==1.26.15
@@ -139,7 +135,6 @@ virtualenv==20.23.1
 wcwidth==0.2.6
 websocket-client==1.5.1
 Werkzeug==1.0.1
-win32-setctime==1.1.0
 wrapt==1.14.1
 wsproto==1.2.0
 yapf==0.40.1
