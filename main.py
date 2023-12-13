@@ -1,3 +1,4 @@
+import random
 from flask import Flask, request
 from flask_socketio import SocketIO, emit
 import datetime
@@ -53,12 +54,22 @@ def getTriviaSessionId():
     return triviaSessionId[0]
 
 def getQuestion():
-    response = requests.get("https://opentdb.com/api.php?amount=1&type=multiple&token=" + getTriviaSessionId())
-    print(response.json())
+
+    catagories = ['9', '17', '18', '19', '20', '22', '23', '24']
+
+
+    response = requests.get("https://opentdb.com/api.php?amount=1&category=" + catagories[random.randint(0, len(catagories) - 1)]
+                             +"&type=multiple&token=" + getTriviaSessionId())
+    print(response.json()) 
     if (response.json()['response_code'] != 0):
        return None
     question = response.json()['results'][0]
     game['question'] = question['question']
+    if ("Which of these" in game['question']):
+        game['question'] = game['question'].replace("Which of these", "What is the")
+    if ("Which of the following" in game['question']):
+        game['question'] = game['question'].replace("Which of the following", "What is the")
+    
     game['answers'] = question['incorrect_answers'] + [question['correct_answer']]
     game['correct_answer'] = question['correct_answer']
     game['buzzed_in'] = []
