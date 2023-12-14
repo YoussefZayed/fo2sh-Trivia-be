@@ -2,10 +2,11 @@ import random
 from flask import Flask, request
 from flask_socketio import SocketIO, emit
 import datetime
+from flask_cors import CORS
 import requests
 
 app = Flask(__name__)
-socketio = SocketIO(app)
+socketio = SocketIO(app, cors_allowed_origins='*')
 
 connectedUserIds = {}
 
