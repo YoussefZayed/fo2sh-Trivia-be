@@ -61,7 +61,7 @@ def getQuestion():
 
 
     response = requests.get("https://opentdb.com/api.php?amount=1&category=" + catagories[random.randint(0, len(catagories) - 1)]
-                             +"&type=multiple&encode=base64&token=" + getTriviaSessionId())
+                             +"&type=multiple&token=" + getTriviaSessionId())
     print(response.json()) 
     if (response.json()['response_code'] != 0):
        return None
@@ -91,7 +91,6 @@ def index():
 def handle_connect():
     getTriviaSessionId()
     user_id = request.sid  # The session ID can be used as a unique identifier for the user
-    connectedUserIds[user_id] = True
     emit('app update', game, broadcast=True)
 
 @socketio.on('addName')
@@ -114,6 +113,9 @@ def handle_question(args):
 def handle_buzz(args):
     user_id = request.sid
     name = connectedUserIds[user_id]
+    for buzz_event in game['buzzed_in']:
+        if (buzz_event[0] == name):
+            return
     game['buzzed_in'].append([name,datetime.datetime.now().strftime("%H:%M:%S")]) 
     emit('app update', game, broadcast=True)
 
@@ -159,15 +161,20 @@ def handle_reset_game(args):
 @socketio.on('changeRole')
 def handle_change_role(name):
     if (game['users'][name]['role'] == 'player'):
+        for user in game['users'].keys():
+            game['users'][user]['role'] = 'player'
         game['users'][name]['role'] = 'presenter'
     else:
         game['users'][name]['role'] = 'player'
+    
     emit('app update', game, broadcast=True)
 
 @socketio.on('disconnect')
 def handle_disconnect():
     user_id = request.sid
-    del connectedUserIds[user_id]
+    global connectedUserIds
+    if (user_id in connectedUserIds):
+        del connectedUserIds[user_id]
     emit('app update', game, broadcast=True)
 
 
