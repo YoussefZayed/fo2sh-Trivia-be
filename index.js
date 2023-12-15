@@ -86,6 +86,7 @@ async function getQuestion() {
     game.show_question = false;
     game.question_time = new Date().toLocaleTimeString();
     game.game_state = "question";
+    game.connectedUserIds = connectedUserIds;
     io.emit("app update", game);
   } catch (error) {
     console.error("Error fetching trivia question:", error);
@@ -103,6 +104,7 @@ io.on("connection", (socket) => {
   socket.on("addName", (name) => {
     try {
       connectedUserIds[socket.id] = name;
+      game.connectedUserIds = connectedUserIds;
       if (!game.users[name]) {
         game.users[name] = {
           score: 0,
