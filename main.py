@@ -61,7 +61,7 @@ def getQuestion():
 
 
     response = requests.get("https://opentdb.com/api.php?amount=1&category=" + catagories[random.randint(0, len(catagories) - 1)]
-                             +"&type=multiple&token=" + getTriviaSessionId())
+                             +"&type=multiple&encode=base64&token=" + getTriviaSessionId())
     print(response.json()) 
     if (response.json()['response_code'] != 0):
        return None
@@ -146,6 +146,8 @@ def handle_remove_score(name):
 
 @socketio.on('resetGame')
 def handle_reset_game(args):
+    print('resetting game')
+    global game
     users = game['users']
     game = InitGame
     game['users'] = users
